@@ -30,7 +30,7 @@ func (p Configure) Apply() ([]string, error) {
 	switch prebuild.Distribution {
 	case "arch", "opensuse":
 
-  case "nixos":
+	case "nixos":
 		if prebuild.ABI == 3 {
 			if err := paths.CopyTo(prebuild.DistDir.Join("nixos"), prebuild.RootApparmord); err != nil {
 				return res, err
