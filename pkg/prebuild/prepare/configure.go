@@ -32,7 +32,7 @@ func (p Configure) Apply() ([]string, error) {
 
   case "nixos":
 		if prebuild.ABI == 3 {
-			if err := paths.CopyTo(prebuild.DistDir.Join("ubuntu"), prebuild.RootApparmord); err != nil {
+			if err := paths.CopyTo(prebuild.DistDir.Join("nixos"), prebuild.RootApparmord); err != nil {
 				return res, err
 			}
 		}
