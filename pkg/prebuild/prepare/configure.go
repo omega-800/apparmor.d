@@ -30,6 +30,13 @@ func (p Configure) Apply() ([]string, error) {
 	switch prebuild.Distribution {
 	case "arch", "opensuse":
 
+  case "nixos":
+		if prebuild.ABI == 3 {
+			if err := paths.CopyTo(prebuild.DistDir.Join("ubuntu"), prebuild.RootApparmord); err != nil {
+				return res, err
+			}
+		}
+
 	case "ubuntu":
 		if err := prebuild.DebianHide.Init(); err != nil {
 			return res, err
