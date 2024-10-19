@@ -41,8 +41,8 @@ func (p Configure) Apply() ([]string, error) {
 			if err != nil {
 				return res, err
 			}
-			regexp.MustCompile("^@{bin}.*$").ReplaceAll(bytes, []byte("@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin"))
-			regexp.MustCompile("^@{etc}.*$").ReplaceAll(bytes, []byte("@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}"))
+			bytes = regexp.MustCompile(`^@{bin}.*$`).ReplaceAll(bytes, []byte("@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin"))
+			bytes = regexp.MustCompile(`^@{etc}.*$`).ReplaceAll(bytes, []byte("@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}"))
 			path.WriteFile(bytes)
 			
 		}
