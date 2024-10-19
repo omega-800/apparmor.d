@@ -6,6 +6,7 @@ package prepare
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/roddhjav/apparmor.d/pkg/paths"
 	"github.com/roddhjav/apparmor.d/pkg/prebuild"
@@ -35,6 +36,15 @@ func (p Configure) Apply() ([]string, error) {
 			if err := paths.CopyTo(prebuild.DistDir.Join("nixos"), prebuild.RootApparmord); err != nil {
 				return res, err
 			}
+			path := prebuild.RootApparmord.Join("tunables/multiarch.d/system")
+			bytes, err := path.ReadFile()
+			if err != nil {
+				return res, err
+			}
+			regexp.MustCompile("^@{bin}.*$").ReplaceAll(bytes, []byte("@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin"))
+			regexp.MustCompile("^@{etc}.*$").ReplaceAll(bytes, []byte("@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}"))
+			path.WriteFile(bytes)
+			
 		}
 
 	case "ubuntu":

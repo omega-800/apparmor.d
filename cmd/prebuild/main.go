@@ -24,7 +24,7 @@ func init() {
 		"ignore",          // Ignore profiles and files from dist/ignore
 		"merge",           // Merge profiles (from group/, profiles-*-*/) to a unified apparmor.d directory
 		"configure",       // Set distribution specificities
-		"setflags",        // Set flags as definied in dist/flags
+		"setflags",        // Set flags as defined in dist/flags
 		"overwrite",       // Overwrite dummy upstream profiles
 		"systemd-default", // Set systemd unit drop in files for dbus profiles
 	)
@@ -37,7 +37,7 @@ func init() {
 
 	// Compatibility with AppArmor 3
 	switch prebuild.Distribution {
-	case "arch", "nixos":
+	case "arch":
 		prebuild.ABI = 3
 
 	case "ubuntu":
