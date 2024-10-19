@@ -37,7 +37,7 @@ func init() {
 
 	// Compatibility with AppArmor 3
 	switch prebuild.Distribution {
-	case "arch":
+	case "arch", "nixos":
 		prebuild.ABI = 3
 
 	case "ubuntu":
