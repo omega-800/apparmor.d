@@ -50,3 +50,6 @@ crash.log
 # Vagrant
 .vagrant/
 .ropeproject
+
+# Nix
+result

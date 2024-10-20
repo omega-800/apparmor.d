@@ -29,19 +29,7 @@ func (p Configure) Apply() ([]string, error) {
 	res := []string{}
 
 	switch prebuild.Distribution {
-	case "arch", "opensuse":
-
-	case "nixos":
-		path := prebuild.RootApparmord.Join("tunables/multiarch.d/system")
-		bytes, err := path.ReadFile()
-		if err != nil {
-			return res, err
-		}
-		bytes = regexp.MustCompile(`@{bin}.*`).ReplaceAll(bytes, []byte("@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin"))
-		bytes = regexp.MustCompile(`@{lib}.*`).ReplaceAll(bytes, []byte("@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}"))
-		if err = path.WriteFile(bytes); err != nil {
-			return res, err
-		}
+	case "arch", "opensuse", "nixos":
 
 	case "ubuntu":
 		if err := prebuild.DebianHide.Init(); err != nil {
