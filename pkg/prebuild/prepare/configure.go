@@ -6,7 +6,6 @@ package prepare
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/roddhjav/apparmor.d/pkg/paths"
 	"github.com/roddhjav/apparmor.d/pkg/prebuild"
