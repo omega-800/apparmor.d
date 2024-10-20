@@ -32,19 +32,15 @@ func (p Configure) Apply() ([]string, error) {
 	case "arch", "opensuse":
 
 	case "nixos":
-		if prebuild.ABI == 3 {
-			if err := paths.CopyTo(prebuild.DistDir.Join("nixos"), prebuild.RootApparmord); err != nil {
-				return res, err
-			}
-			path := prebuild.RootApparmord.Join("tunables/multiarch.d/system")
-			bytes, err := path.ReadFile()
-			if err != nil {
-				return res, err
-			}
-			bytes = regexp.MustCompile(`^@{bin}.*$`).ReplaceAll(bytes, []byte("@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin"))
-			bytes = regexp.MustCompile(`^@{etc}.*$`).ReplaceAll(bytes, []byte("@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}"))
-			path.WriteFile(bytes)
-			
+		path := prebuild.RootApparmord.Join("tunables/multiarch.d/system")
+		bytes, err := path.ReadFile()
+		if err != nil {
+			return res, err
+		}
+		bytes = regexp.MustCompile(`@{bin}.*`).ReplaceAll(bytes, []byte("@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin"))
+		bytes = regexp.MustCompile(`@{lib}.*`).ReplaceAll(bytes, []byte("@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}"))
+		if err = path.WriteFile(bytes); err != nil {
+			return res, err
 		}
 
 	case "ubuntu":
