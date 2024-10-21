@@ -8,8 +8,21 @@ index 0a95d183..df656c01 100644
  # Common places for binaries and libraries across distributions
 -@{bin}=/{,usr/}{,s}bin
 -@{lib}=/{,usr/}lib{,exec,32,64}
-+@{bin}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{,s}bin,/usr/bin
-+@{lib}=/{,run/current-system/sw,nix/store/${hex32}*,/home/*/.nix-profile}/{lib,lib64}
- 
++@{package1}={@{w},.,-}
++@{package2}=@{package1}@{package1}
++@{package4}=@{package2}@{package2}
++@{package8}=@{package4}@{package4}
++@{package16}=@{package8}@{package8}
++@{package32}=@{package16}@{package16}
++@{package64}=@{package32}@{package32}
++@{nix_package_name}={@{package32},}{@{package16},}{@{package8},}{@{package4},}{@{package2},}{@{package1},}
++
++
++
++@{nix_store}=/nix/store/@{rand32}-@{nix_package_name}
++@{base_paths}={@{nix_store},/run/current-system/sw,/etc/profiles/per-user/@{user}}
++@{bin}={@{base_paths}/{bin,libexec},/{,usr/}{,s}bin}
++@{lib}=@{base_paths}/lib{exec,} 
+
  # Common places for temporary files
  @{tmp}=/tmp/ /tmp/user/@{uid}/
