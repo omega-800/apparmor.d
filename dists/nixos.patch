@@ -1,8 +1,8 @@
 diff --git a/apparmor.d/tunables/multiarch.d/system b/apparmor.d/tunables/multiarch.d/system
-index 0a95d183..df656c01 100644
+index 0a95d183..40609db2 100644
 --- a/apparmor.d/tunables/multiarch.d/system
 +++ b/apparmor.d/tunables/multiarch.d/system
-@@ -106,8 +106,8 @@
+@@ -106,8 +106,21 @@
  @{MOUNTS}=@{MOUNTDIRS}/*/ @{run}/user/@{uid}/gvfs/
  
  # Common places for binaries and libraries across distributions
@@ -23,6 +23,52 @@ index 0a95d183..df656c01 100644
 +@{base_paths}={@{nix_store},/run/current-system/sw,/etc/profiles/per-user/@{user}}
 +@{bin}={@{base_paths}/{bin,libexec},/{,usr/}{,s}bin}
 +@{lib}=@{base_paths}/lib{exec,} 
-
+ 
  # Common places for temporary files
  @{tmp}=/tmp/ /tmp/user/@{uid}/
+diff --git a/pkg/aa/apparmor.go b/pkg/aa/apparmor.go
+index a887d4b9..85e91250 100644
+--- a/pkg/aa/apparmor.go
++++ b/pkg/aa/apparmor.go
+@@ -32,14 +32,39 @@ func NewAppArmorProfile() *AppArmorProfileFile {
+ func DefaultTunables() *AppArmorProfileFile {
+ 	return &AppArmorProfileFile{
+ 		Preamble: Rules{
++			//i'm a master at hacky solutions
++			
++			&Variable{Name: "rand2", Values: []string{"@{c}@{c}"}, Define: true},
++			&Variable{Name: "rand4", Values: []string{"@{rand2}@{rand2}"}, Define: true},
++			&Variable{Name: "rand6", Values: []string{"@{rand4}@{rand2}"}, Define: true},
++			&Variable{Name: "rand8", Values: []string{"@{rand4}@{rand4}"}, Define: true},
++			&Variable{Name: "rand9", Values: []string{"@{rand8}@{c}"}, Define: true},
++			&Variable{Name: "rand10", Values: []string{"@{rand8}@{rand2}"}, Define: true},
++			&Variable{Name: "rand12", Values: []string{"@{rand8}@{rand4}"}, Define: true},
++			&Variable{Name: "rand15", Values: []string{"@{rand8}@{rand4}@{rand2}@{c}"}, Define: true},
++			&Variable{Name: "rand16", Values: []string{"@{rand8}@{rand8}"}, Define: true},
++			&Variable{Name: "rand32", Values: []string{"@{rand16}@{rand16}"}, Define: true},
++			&Variable{Name: "user", Values: []string{"[a-zA-Z_]{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}{@{w},}"}, Define: true},
++			&Variable{Name: "w", Values: []string{"[a-zA-Z0-9_]"}, Define: true},
++			&Variable{Name: "package1", Values: []string{"{@{w},.,-}"}, Define: true},
++			&Variable{Name: "package2", Values: []string{"@{package1}@{package1}"}, Define: true},
++			&Variable{Name: "package4", Values: []string{"@{package2}@{package2}"}, Define: true},
++			&Variable{Name: "package8", Values: []string{"@{package4}@{package4}"}, Define: true},
++			&Variable{Name: "package16", Values: []string{"@{package8}@{package8}"}, Define: true},
++			&Variable{Name: "package32", Values: []string{"@{package16}@{package16}"}, Define: true},
++			&Variable{Name: "package64", Values: []string{"@{package32}@{package32}"}, Define: true},
++			&Variable{Name: "nix_package_name", Values: []string{"{@{package32},}{@{package16},}{@{package8},}{@{package4},}{@{package2},}{@{package1},}"}, Define: true},
++			&Variable{Name: "nix_store", Values: []string{"/nix/store/@{rand32}-@{nix_package_name}"}, Define: true},
++			&Variable{Name: "base_paths", Values: []string{"{@{nix_store},/run/current-system/sw,/etc/profiles/per-user/@{user}}"}, Define: true},
++			&Variable{Name: "bin", Values: []string{"{@{base_paths}/{bin,libexec},/{,usr/}{,s}bin}"}, Define: true},
++			&Variable{Name: "lib", Values: []string{"@{base_paths}/lib{exec,} "}, Define: true},
++
+ 			&Variable{Name: "arch", Values: []string{"x86_64", "amd64", "i386"}, Define: true},
+-			&Variable{Name: "bin", Values: []string{"/{,usr/}{,s}bin"}, Define: true},
+ 			&Variable{Name: "c", Values: []string{"[0-9a-zA-Z]"}, Define: true},
+ 			&Variable{Name: "etc_ro", Values: []string{"/{,usr/}etc/"}, Define: true},
+ 			&Variable{Name: "HOME", Values: []string{"/home/*"}, Define: true},
+ 			&Variable{Name: "int", Values: []string{"[0-9]{[0-9],}{[0-9],}{[0-9],}{[0-9],}{[0-9],}{[0-9],}{[0-9],}{[0-9],}{[0-9],}"}, Define: true},
+ 			&Variable{Name: "int2", Values: []string{"[0-9][0-9]"}, Define: true},
+-			&Variable{Name: "lib", Values: []string{"/{,usr/}lib{,exec,32,64}"}, Define: true},
+ 			&Variable{Name: "MOUNTS", Values: []string{"/media/*/", "/run/media/*/*/", "/mnt/*/"}, Define: true},
+ 			&Variable{Name: "multiarch", Values: []string{"*-linux-gnu*"}, Define: true},
+ 			&Variable{Name: "rand", Values: []string{"@{c}{@{c},}{@{c},}{@{c},}{@{c},}{@{c},}{@{c},}{@{c},}{@{c},}{@{c},}"}, Define: true}, // Up to 10 characters
