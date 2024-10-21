@@ -28,7 +28,7 @@
 
             nativeBuildInputs = [ go ];
 
-            patches = [ ./nixos.patch ];
+            patches = [ ./dists/nixos.patch ];
 
             buildPhase = # bash
               ''
