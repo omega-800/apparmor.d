@@ -57,7 +57,7 @@ index a887d4b9..85e91250 100644
 +			&Variable{Name: "package64", Values: []string{"@{package32}@{package32}"}, Define: true},
 +			&Variable{Name: "nix_package_name", Values: []string{"{@{package32},}{@{package16},}{@{package8},}{@{package4},}{@{package2},}{@{package1},}"}, Define: true},
 +			&Variable{Name: "nix_store", Values: []string{"/nix/store/@{rand32}-@{nix_package_name}"}, Define: true},
-+			&Variable{Name: "base_paths", Values: []string{"/run/current-system/sw"}, Define: true},
++			&Variable{Name: "base_paths", Values: []string{"{@{nix_store},/run/current-system/sw,/etc/profiles/per-user/@{user}}"}, Define: true},
 +			&Variable{Name: "bin", Values: []string{"{@{base_paths}/{bin,libexec},/{,usr/}{,s}bin}"}, Define: true},
 +			&Variable{Name: "lib", Values: []string{"@{base_paths}/lib{exec,}"}, Define: true},
 +
