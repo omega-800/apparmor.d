@@ -19,10 +19,10 @@ index 0a95d183..40609db2 100644
 +
 +
 +
-+@{nix_store}=/nix/store/@{rand32}-@{nix_package_name}
-+@{base_paths}={@{nix_store},/run/current-system/sw,/etc/profiles/per-user/@{user}}
-+@{bin}={@{base_paths}/{bin,libexec},/{,usr/}{,s}bin}
-+@{lib}=@{base_paths}/lib{exec,} 
++@{nix_store}=nix/store/@{rand32}-@{nix_package_name}
++@{base_paths}={@{nix_store},run/current-system/sw,etc/profiles/per-user/@{user}}
++@{bin}=/{@{base_paths}/{bin,libexec},{,usr/}{,s}bin}
++@{lib}=/@{base_paths}/lib{exec,} 
  
  # Common places for temporary files
  @{tmp}=/tmp/ /tmp/user/@{uid}/
@@ -56,10 +56,10 @@ index a887d4b9..85e91250 100644
 +			&Variable{Name: "package32", Values: []string{"@{package16}@{package16}"}, Define: true},
 +			&Variable{Name: "package64", Values: []string{"@{package32}@{package32}"}, Define: true},
 +			&Variable{Name: "nix_package_name", Values: []string{"{@{package32},}{@{package16},}{@{package8},}{@{package4},}{@{package2},}{@{package1},}"}, Define: true},
-+			&Variable{Name: "nix_store", Values: []string{"/nix/store/@{rand32}-@{nix_package_name}"}, Define: true},
-+			&Variable{Name: "base_paths", Values: []string{"{@{nix_store},/run/current-system/sw,/etc/profiles/per-user/@{user}}"}, Define: true},
-+			&Variable{Name: "bin", Values: []string{"{@{base_paths}/{bin,libexec},/{,usr/}{,s}bin}"}, Define: true},
-+			&Variable{Name: "lib", Values: []string{"@{base_paths}/lib{exec,}"}, Define: true},
++			&Variable{Name: "nix_store", Values: []string{"nix/store/@{rand32}-@{nix_package_name}"}, Define: true},
++			&Variable{Name: "base_paths", Values: []string{"{@{nix_store},run/current-system/sw,etc/profiles/per-user/@{user}}"}, Define: true},
++			&Variable{Name: "bin", Values: []string{"/{@{base_paths}/{bin,libexec},{,usr/}{,s}bin}"}, Define: true},
++			&Variable{Name: "lib", Values: []string{/"@{base_paths}/lib{exec,}"}, Define: true},
 +
  			&Variable{Name: "arch", Values: []string{"x86_64", "amd64", "i386"}, Define: true},
 -			&Variable{Name: "bin", Values: []string{"/{,usr/}{,s}bin"}, Define: true},
